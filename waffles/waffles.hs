@@ -1,4 +1,4 @@
---module Waffles where
+module Waffles where
     import qualified Data.Map as Map
 
     main :: IO ()
