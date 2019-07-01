@@ -1,4 +1,4 @@
--- module Leaderboard2 where
+module Leaderboard2 where
     import Data.Array;
 
     binarySearch :: (Ord a, Num a, Integral a) =>
