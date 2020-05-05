@@ -20,6 +20,7 @@ Created to learn the basics of Haskell
 ### Run GHCID
 1. From script directory
 2. Execute `ghcid`
+Note: `chmod go-w <script-dir>` will fix cryptic "won't start" errors.
 
 ## What this gets you
 
