@@ -95,10 +95,13 @@ p2_1 = Main.Point 2 1
 
 testGetInboundsIndexGetsVal1 =
   TestCase (assertEqual "should be 2" (Just 2) (Main.get p0_0 layout1))
+
 testGetInboundsIndexGetsVal2 =
   TestCase (assertEqual "should be 1" (Just 1) (Main.get p2_1 layout1))
+
 testGetOutOfBoundsIndexGetsNothing =
   TestCase (assertEqual "should be Nothing" Nothing (Main.get pn1_0 layout1))
+
 testFoldToBorder = TestCase
   (assertEqual
     "should be Left 5, 2"
@@ -111,6 +114,7 @@ testFoldToBorder = TestCase
                                         layout1
     )
   )
+
 testFoldToWall = TestCase
   (assertEqual
     "should be Left 2, 2"
@@ -123,6 +127,7 @@ testFoldToWall = TestCase
                                         layout1
     )
   )
+
 testFoldToGoal = TestCase
   (assertEqual
     "should be Right 4, 3"
@@ -135,39 +140,46 @@ testFoldToGoal = TestCase
                                         layout1
     )
   )
+
 testGetChildNodes = TestCase
   (assertEqual "should be find all the moves"
                [Left p0_2, Left p4_2, Right p2_4]
                (Main.getChildNodes layout2 p2_2 Main.allMoves)
   )
+
 testGetChildNodes2 = TestCase
   (assertEqual "should be find all the moves"
                [Left p5_0]
                (Main.getChildNodes layout3 p5_5 Main.allMoves)
   )
+
 testGetChildNodes3 = TestCase
   (assertEqual "should be find all the moves"
                [Right p0_0, Left p5_5]
                (Main.getChildNodes layout3 p5_0 Main.allMoves)
   )
+
 testBfsGoalFound = TestCase
   (assertEqual
     "should find the goal"
     True
     (Main.bfs layout3 (singleton (Left p0_5)) (Set.fromList []) (Left p0_5))
   )
+
 testBfsGoalFound2 = TestCase
   (assertEqual
     "should find the goal"
     True
     (Main.bfs layout3 (singleton (Left p5_5)) (Set.fromList []) (Left p5_5))
   )
+
 testBfsGoalFound3 = TestCase
   (assertEqual
     "should find the goal"
     True
     (Main.bfs layout3 (singleton (Left p5_0)) (Set.fromList []) (Left p5_0))
   )
+
 testBfsNoGoalFound = TestCase
   (assertEqual
     "should find the goal"
