@@ -1,7 +1,9 @@
 module Main where
 
+import Data.Maybe
+import Data.Set as Set
 import Data.Char
-import Data.Map
+import Data.Map as Map
 
 main :: IO ()
 main = do
@@ -9,20 +11,43 @@ main = do
   print $ doWork $ lines content
 
 doWork :: [String] -> Int
-doWork ls = sum $ fmap (getCodes '0' '0' False) ls
+doWork ls = sum $ fmap (getCodes '0' '0' False Set.empty) ls
 
-getCodes :: Char -> Char -> Bool -> String -> Int
-getCodes first last seen [] = read [first, last]
-getCodes first last seen (x:xs) =
-  if isDigit x then getCodes f x True xs else getCodes first last seen xs
+getCodes :: Char -> Char -> Bool -> Set String -> String -> Int
+getCodes first last seen bufs [] = read [first, last]
+getCodes first last seen bufs (x:xs) =
+  if isDigit x
+  then getCodes f x True Set.empty xs
+  else getCodes first last seen Set.empty xs
   where f = if seen then first else x
 
--- numTrie :: Map String (Maybe (Map Stri uug )
+setBuffers :: Char -> Set String -> Set String
+setBuffers char bufs = Set.empty
+
+data TriePresence = Zero | Partial | Full
+
+checkTrie :: String -> Trie -> Bool
+checkTrie [] (Trie _) = Partial
+checkTrie (first:rest) (Trie ) = Zero
+checkTrie (first:rest) (Trie trie) | isJust nestedTrie = fromMaybe Full (fmap $ checkTrie rest nestedTrie)
+                                   | otherwise         = Zero
+  where nestedTrie = fromMaybe Nothing (Map.lookup first trie)
+
+
 
 newtype Trie = Trie (Map Char (Maybe Trie))
+newtype TrieBuilder = Tb ([(Char, Tb)])
+type Tb = TrieBuilder
 
-newtype Tb = Tb ([(Char, Tb)])
+mt :: Tb -> Trie
+-- Last item in the nested list, return a map of that char to Nothing
+mt (Tb items) = Prelude.foldl buildMap (Trie Map.empty) items
 
+buildMap :: Trie -> (Char, Tb) -> Trie
+buildMap (Trie m) (char, (Tb [])) = Trie $ Map.insert char Nothing m
+buildMap (Trie m) (char, ls) = Trie $ Map.insert char (Just $ mt ls) m
+
+-- Precomputed Trie
 numTrie :: Trie
 numTrie = mt $ Tb [
               ('o', Tb [('n', Tb [('e', Tb [])])]),
@@ -43,10 +68,9 @@ numTrie = mt $ Tb [
               ('n', Tb [('i', Tb [('n', Tb [('e', Tb [])])])])
             ]
 
-mt :: Tb -> Trie
--- Last item in the nested list, return a map of that char to Nothing
-mt (Tb items) = Prelude.foldl buildMap (Trie empty) items
 
-buildMap :: Trie -> (Char, Tb) -> Trie
-buildMap (Trie m) (char, (Tb [])) = Trie $ insert char Nothing m
-buildMap (Trie m) (char, Tb ls) = Trie $ insert char (Just (Prelude.foldl buildMap (Trie empty) ls)) m
+-- does it match a first key
+--   if so, add it to the set
+-- does is continue to match if added to any in progress buffers
+--   if so, add it to those
+-- for any it doesn't match, delete those keys
