@@ -4,9 +4,8 @@ import Data.Char
 
 main :: IO ()
 main = do
-  content <- readFile "test_input.txt"
+  content <- readFile "input.txt"
   print $ doWork $ lines content
-
 
 doWork :: [String] -> Int
 doWork ls = sum $ map (getCodes '0' '0' False) ls
