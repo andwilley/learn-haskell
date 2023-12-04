@@ -1,5 +1,7 @@
 module Main where
 
+import Control.Monad
+import Data.Either
 import Data.Maybe
 import Data.Set as Set
 import Data.Char
@@ -26,12 +28,34 @@ setBuffers char bufs = Set.empty
 
 data TriePresence = Zero | Partial | Full
 
-checkTrie :: String -> Trie -> Bool
-checkTrie [] (Trie _) = Partial
-checkTrie (first:rest) (Trie ) = Zero
-checkTrie (first:rest) (Trie trie) | isJust nestedTrie = fromMaybe Full (fmap $ checkTrie rest nestedTrie)
-                                   | otherwise         = Zero
-  where nestedTrie = fromMaybe Nothing (Map.lookup first trie)
+checkTrie :: String -> Maybe Trie -> TriePresence
+checkTrie ls Nothing = Zero
+checkTrie [] Nothing = Full
+checkTrie [] (Just (Trie trie)) = Partial
+checkTrie (c:cs) (Just (Trie trie)) =
+  if present
+  then checkTrie cs nested
+  else Zero
+  where
+    nested = Map.lookup c trie
+    present = isJust nested
+
+unnestTrieLookup :: Char -> Maybe Trie -> Either () Trie
+unnestTrieLookup c Nothing = Left ()
+unnestTrieLookup c (Just (Trie trie)) = if present
+                                then Right $ fromJust value
+                                else Left ()
+  where value = Map.lookup c trie
+        present = isJust value
+
+-- checkTrie :: String -> Trie -> TriePresence
+-- checkTrie [] (Trie _) = Partial
+-- checkTrie (first:rest) (Trie trie) | isJust nestedTrie = fromMaybe Full (fmap $ checkTrie rest nestedTrie)
+--                                    | otherwise         = Zero
+--   where (Trie nestedTrie) = (Map.lookup first trie)
+
+-- getOrZero :: Char -> Trie -> Maybe Trie
+-- getOrZero char (Trie trie) = fmap Trie $ Map.lookup char trie
 
 
 
