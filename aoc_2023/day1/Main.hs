@@ -32,32 +32,20 @@ checkTrie :: String -> Maybe Trie -> TriePresence
 checkTrie ls Nothing = Zero
 checkTrie [] Nothing = Full
 checkTrie [] (Just (Trie trie)) = Partial
-checkTrie (c:cs) (Just (Trie trie)) =
-  if present
-  then checkTrie cs nested
+checkTrie (c:cs) (Just trie) =
+  if isRight nested
+  then checkTrie cs (fromRight Nothing nested)
   else Zero
-  where
-    nested = Map.lookup c trie
-    present = isJust nested
+  where nested = unnestTrieLookup c (Just trie)
 
-unnestTrieLookup :: Char -> Maybe Trie -> Either () Trie
+unnestTrieLookup :: Char -> Maybe Trie -> Either () (Maybe Trie)
 unnestTrieLookup c Nothing = Left ()
-unnestTrieLookup c (Just (Trie trie)) = if present
-                                then Right $ fromJust value
+unnestTrieLookup c (Just (Trie trie)) = if isTrie
+                                then Right $ fromJust  value
                                 else Left ()
   where value = Map.lookup c trie
         present = isJust value
-
--- checkTrie :: String -> Trie -> TriePresence
--- checkTrie [] (Trie _) = Partial
--- checkTrie (first:rest) (Trie trie) | isJust nestedTrie = fromMaybe Full (fmap $ checkTrie rest nestedTrie)
---                                    | otherwise         = Zero
---   where (Trie nestedTrie) = (Map.lookup first trie)
-
--- getOrZero :: Char -> Trie -> Maybe Trie
--- getOrZero char (Trie trie) = fmap Trie $ Map.lookup char trie
-
-
+        isTrie = present && isJust (fromJust value)
 
 newtype Trie = Trie (Map Char (Maybe Trie))
 newtype TrieBuilder = Tb ([(Char, Tb)])
