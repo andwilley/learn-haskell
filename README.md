@@ -7,15 +7,17 @@ Created to learn the basics of Haskell
 ## Setup
 
 ### Main program
-1. Copy the `starter` directory and rename it whatever you want.
-2. Write a program.
-3. Compile it with `ghc Main.hs`
-4. Run it with `input.txt | ./Main`.
-4. a. Run it with `input.txt | ./Main >> output.txt` to write to the output.
+1. issue `stack new project-name`
+1. `mkdir static && touch input.txt`
+1. edit app/Main.hs
+1. `stack build`
+1. `stack exec project-name-exe -- input.txt`
+
+Note: consider adding deps to `package.yaml`
 
 ### Unit Tests
-1. Compile the test with `ghc -main-is Test Test.hs`
-2. Run the test with `./Test`
+1. `stack build`
+2. `stack test`
 
 ### Run GHCID
 1. From script directory
