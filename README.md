@@ -8,10 +8,10 @@ Created to learn the basics of Haskell
 
 ### Main program
 1. issue `stack new project-name`
-1. `mkdir static && touch input.txt`
+1. `mkdir static && touch static/input.txt`
 1. edit app/Main.hs
 1. `stack build`
-1. `stack exec project-name-exe -- input.txt`
+1. `stack exec project-name-exe -- static/input.txt`
 
 Note: consider adding deps to `package.yaml`
 
